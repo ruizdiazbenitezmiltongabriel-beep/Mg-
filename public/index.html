@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MGSystem Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-900 font-sans text-slate-100 antialiased selection:bg-red-600 selection:text-white">
+
+  <div id="vista-auth" class="min-h-screen flex items-center justify-center bg-slate-950 p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-red-900/40 p-8 rounded-2xl shadow-2xl relative">
+      
+      <div class="flex flex-col items-center mb-6">
+        <div class="bg-red-600 p-3 rounded-xl text-white font-black text-2xl shadow-lg shadow-red-600/40 mb-2">MG</div>
+        <h2 class="text-2xl font-black text-white">MGSystem <span class="text-red-500 font-light">Pro</span></h2>
+        <p class="text-xs text-slate-400 mt-1" id="auth-subtitulo">Ingresa tus credenciales para acceder</p>
+      </div>
+
+      <form id="form-login" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Usuario</label>
+          <input type="text" id="login-user" placeholder="Ej: admin" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:border-red-600 outline-none" required>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Contraseña</label>
+          <input type="password" id="login-pass" placeholder="••••••••" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:border-red-600 outline-none" required>
+        </div>
+        <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-lg shadow-lg shadow-red-600/30 transition">Iniciar Sesión</button>
+        
+        <p class="text-xs text-center text-slate-400 mt-4">
+          ¿No tienes cuenta? <button type="button" onclick="mostrarFormularioAuth('registro')" class="text-red-500 font-bold hover:underline">Crear Usuario</button>
+        </p>
+      </form>
+
+      <form id="form-registro" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre Completo</label>
+          <input type="text" id="reg-nombre" placeholder="Ej: Carlos Benítez" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:border-red-600 outline-none" required>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre de Usuario</label>
+          <input type="text" id="reg-user" placeholder="Ej: cbenitez" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:border-red-600 outline-none" required>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Contraseña</label>
+          <input type="password" id="reg-pass" placeholder="••••••••" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:border-red-600 outline-none" required>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Rol / Permiso</label>
+          <select id="reg-rol" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-white focus:border-red-600 outline-none">
+            <option value="Operador">Operador (Acceso limitado)</option>
+            <option value="Administrador">Administrador (Control total)</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-lg shadow-lg shadow-red-600/30 transition">Registrar Usuario</button>
+        
+        <p class="text-xs text-center text-slate-400 mt-4">
+          ¿Ya tienes usuario? <button type="button" onclick="mostrarFormularioAuth('login')" class="text-red-500 font-bold hover:underline">Iniciar Sesión</button>
+        </p>
+      </form>
+
+    </div>
+  </div>
+
+  <div id="vista-app" class="flex h-screen overflow-hidden hidden">
+    
+    <aside class="w-64 bg-slate-950 text-slate-300 flex flex-col justify-between p-4 border-r border-red-900/30 shadow-2xl z-20">
+      <div>
+        <div class="flex items-center gap-3 px-2 py-4 border-b border-red-900/30 mb-6">
+          <div class="bg-red-600 p-2 rounded-lg text-white font-black text-xl shadow-lg shadow-red-600/40">MG</div>
+          <span class="font-extrabold text-xl tracking-wide text-white">MGSystem <span class="text-red-500 font-light text-sm">Pro</span></span>
+        </div>
+
+        <nav class="space-y-1 text-sm">
+          <button onclick="navegar('dashboard')" id="btn-dashboard" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-red-600 text-white font-semibold transition shadow-md shadow-red-600/30">
+            <div class="flex items-center gap-3">
+              <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+            </div>
+          </button>
+
+          <div>
+            <button onclick="toggleSubmenu('sub-clientes')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-900 text-slate-300 hover:text-red-400 transition">
+              <div class="flex items-center gap-3">
+                <i data-lucide="users" class="w-4 h-4"></i> Clientes
+              </div>
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </button>
+            <div id="sub-clientes" class="hidden pl-9 space-y-1 mt-1 text-xs text-slate-400">
+              <a href="#" onclick="navegar('clientes')" class="block py-1.5 hover:text-red-400">Ver directorio y crear</a>
+            </div>
+          </div>
+
+          <div>
+            <button onclick="toggleSubmenu('sub-pagos')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-900 text-slate-300 hover:text-red-400 transition">
+              <div class="flex items-center gap-3">
+                <i data-lucide="credit-card" class="w-4 h-4"></i> Pagos
+              </div>
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </button>
+            <div id="sub-pagos" class="hidden pl-9 space-y-1 mt-1 text-xs text-slate-400">
+              <a href="#" onclick="navegar('dashboard')" class="block py-1.5 hover:text-red-400">Registrar Pago</a>
+              <a href="#" onclick="navegar('pagos')" class="block py-1.5 hover:text-red-400">Historial de Cobros</a>
+            </div>
+          </div>
+
+          <button onclick="navegar('morosos')" id="btn-morosos" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-900 text-slate-300 hover:text-red-400 transition">
+            <div class="flex items-center gap-3">
+              <i data-lucide="calendar" class="w-4 h-4"></i> Caducidades
+            </div>
+          </button>
+
+          <div id="menu-administrativo-wrapper">
+            <button onclick="toggleSubmenu('sub-admin')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-900 text-slate-300 hover:text-red-400 transition">
+              <div class="flex items-center gap-3">
+                <i data-lucide="folder-cog" class="w-4 h-4"></i> Administrativo
+              </div>
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </button>
+            <div id="sub-admin" class="hidden pl-9 space-y-1 mt-1 text-xs text-slate-400">
+              <a href="#" onclick="navegar('admin-config')" class="block py-1.5 hover:text-red-400">Configuración General</a>
+              <a href="#" onclick="navegar('admin-permisos')" class="block py-1.5 hover:text-red-400">Permisos y Usuarios</a>
+            </div>
+          </div>
+
+          <button onclick="navegar('informes')" id="btn-informes" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-900 text-slate-300 hover:text-red-400 transition">
+            <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Informes
+          </button>
+
+          <button onclick="navegar('ajustes')" id="btn-ajustes" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-900 text-slate-300 hover:text-red-400 transition">
+            <i data-lucide="settings" class="w-4 h-4"></i> Ajustes
+          </button>
+        </nav>
+      </div>
+
+      <button onclick="cerrarSesion()" class="flex items-center gap-3 px-3 py-2.5 text-xs text-slate-400 hover:text-red-500 transition border-t border-slate-900 w-full text-left">
+        <i data-lucide="log-out" class="w-4 h-4"></i> Cerrar Sesión
+      </button>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-900">
+      
+      <header class="bg-slate-950 border-b border-red-900/30 px-8 py-3 flex items-center justify-between sticky top-0 z-10 shadow-lg">
+        <div class="relative w-80">
+          <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-2.5"></i>
+          <input type="text" placeholder="Buscar..." class="w-full bg-slate-900 text-xs text-white pl-9 pr-4 py-2 rounded-lg border border-slate-800 focus:border-red-600 outline-none">
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2 border-l border-slate-800 pl-4">
+            <div id="user-avatar" class="w-7 h-7 bg-red-600 text-white font-bold rounded-full flex items-center justify-center text-xs shadow-md">U</div>
+            <span id="user-name" class="text-xs font-semibold text-slate-200">Usuario</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="p-6 space-y-6">
+        
+        <div id="seccion-dashboard" class="space-y-6">
+          <h1 class="text-2xl font-black text-white">Dashboard <span class="text-sm font-normal text-slate-400">(Resumen General)</span></h1>
+          
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-slate-950 p-4 rounded-xl border border-red-900/30 shadow-lg">
+              <p class="text-xs font-medium text-slate-400">Cartera Activa</p>
+              <p id="metric-clientes" class="text-2xl font-bold text-white mt-2">0</p>
+            </div>
+            <div class="bg-slate-950 p-4 rounded-xl border border-red-900/30 shadow-lg">
+              <p class="text-xs font-medium text-slate-400">Facturación Mensual</p>
+              <p id="metric-facturacion" class="text-2xl font-bold text-red-500 mt-2">Gs. 0</p>
+            </div>
+            <div class="bg-slate-950 p-4 rounded-xl border border-red-900/30 shadow-lg">
+              <p class="text-xs font-medium text-slate-400">Cuentas Vencidas</p>
+              <p id="metric-vencidos" class="text-2xl font-bold text-red-400 mt-2">0</p>
+            </div>
+            <div class="bg-slate-950 p-4 rounded-xl border border-red-900/30 shadow-lg flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-400">Renovaciones</p>
+                <p class="text-2xl font-bold text-white mt-2">100%</p>
+              </div>
+              <div class="w-12 h-12">
+                <canvas id="miniDoughnut"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-slate-950 p-5 rounded-xl border border-red-900/30 shadow-lg">
+              <h3 class="text-sm font-bold text-white mb-4">Distribución de Cartera</h3>
+              <div class="h-56 flex items-center justify-center">
+                <canvas id="chartCartera"></canvas>
+              </div>
+            </div>
+            <div class="bg-slate-950 p-5 rounded-xl border border-red-900/30 shadow-lg">
+              <h3 class="text-sm font-bold text-white mb-4">Gestión de Cobros</h3>
+              <div class="h-56">
+                <canvas id="chartCobros"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 p-5 rounded-xl border border-red-900/30 shadow-lg">
+            <h3 class="text-sm font-bold text-white mb-3">Registrar Pago Rápido</h3>
+            <form id="form-pago-rapido" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <select id="select-pago-cliente" class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:border-red-600 outline-none" required></select>
+              <input type="text" inputmode="numeric" id="pago-monto" placeholder="Monto (Gs.) Ej: 100.000" class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:border-red-600 outline-none" required>
+              <select id="pago-metodo" class="p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:border-red-600 outline-none">
+                <option>Efectivo</option>
+                <option>Transferencia</option>
+                <option>Tarjeta / Giro</option>
+              </select>
+              <button type="submit" class="py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg shadow-lg shadow-red-600/30 transition">Procesar Cobro</button>
+            </form>
+          </div>
+        </div>
+
+        <div id="seccion-clientes" class="hidden space-y-6">
+          <div class="bg-slate-950 p-5 rounded-xl border border-red-900/30 shadow-lg">
+            <h2 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="user-plus" class="text-red-500 w-4 h-4"></i> Registrar Nuevo Cliente
+            </h2>
+            <form id="form-nuevo-cliente" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <input type="text" id="cli-nombre" placeholder="Nombre completo" class="p-2.5 border border-slate-800 rounded-lg text-xs bg-slate-900 text-white focus:border-red-600 outline-none" required>
+              <select id="cli-servicio" class="p-2.5 border border-slate-800 rounded-lg text-xs bg-slate-900 text-white focus:border-red-600 outline-none" required>
+                <option value="">Seleccione un servicio...</option>
+                <option>Seguro Auto</option>
+                <option>Plan Vida</option>
+                <option>Hogar Premium</option>
+                <option>Internet</option>
+                <option>Telefonía</option>
+                <option>Otro servicio</option>
+              </select>
+              <input type="text" inputmode="numeric" id="cli-monto" placeholder="Monto Cuota (Gs.) Ej: 100.000" class="p-2.5 border border-slate-800 rounded-lg text-xs bg-slate-900 text-white focus:border-red-600 outline-none" required>
+              <select id="cli-vencimiento" class="p-2.5 border border-slate-800 rounded-lg text-xs bg-slate-900 text-white focus:border-red-600 outline-none" required></select>
+              <button type="submit" class="md:col-span-4 bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg font-bold text-xs shadow-md transition">Guardar Cliente</button>
+            </form>
+          </div>
+
+          <div class="bg-slate-950 rounded-xl border border-red-900/30 p-5 shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-sm font-bold text-white">Directorio de Clientes</h2>
+              <input type="text" id="buscar-cliente" onkeyup="filtrarClientes()" placeholder="Buscar cliente por nombre..." class="p-2 border border-slate-800 rounded-lg text-xs bg-slate-900 text-white focus:border-red-600 outline-none w-64">
+            </div>
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-900 text-red-400 uppercase border-b border-red-900/30">
+                <tr>
+                  <th class="p-3">ID</th>
+                  <th class="p-3">Nombre</th>
+                  <th class="p-3">Servicio</th>
+                  <th class="p-3">Monto</th>
+                  <th class="p-3">Próximo Vencimiento</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-clientes-body" class="divide-y divide-slate-900"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="seccion-morosos" class="hidden space-y-6">
+          <div class="bg-slate-950 rounded-xl border border-red-900/30 p-5 shadow-lg">
+            <h2 class="text-sm font-bold text-red-400 mb-4 flex items-center gap-2">
+              <i data-lucide="alert-circle" class="w-4 h-4"></i> Control de Caducidades y Cuentas
+            </h2>
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-900 text-red-400 uppercase border-b border-red-900/30">
+                <tr>
+                  <th class="p-3">Cliente</th>
+                  <th class="p-3">Servicio</th>
+                  <th class="p-3">Monto</th>
+                  <th class="p-3">Vencimiento</th>
+                  <th class="p-3">Estado</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-morosos-body" class="divide-y divide-slate-900"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="seccion-pagos" class="hidden space-y-6">
+          <div class="bg-slate-950 rounded-xl border border-red-900/30 p-5 shadow-lg">
+            <h2 class="text-sm font-bold text-white mb-4">Historial de Transacciones</h2>
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-900 text-red-400 uppercase border-b border-red-900/30">
+                <tr>
+                  <th class="p-3">Nº Cobro</th>
+                  <th class="p-3">Cliente</th>
+                  <th class="p-3">Monto</th>
+                  <th class="p-3">Método</th>
+                  <th class="p-3">Fecha y Hora</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-pagos-body" class="divide-y divide-slate-900"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="seccion-admin-config" class="hidden space-y-6">
+          <div class="bg-slate-950 rounded-xl border border-red-900/30 p-5 shadow-lg">
+            <h2 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="folder-cog" class="text-red-500 w-4 h-4"></i> Configuración del Sistema
+            </h2>
+            <p class="text-xs text-slate-400 mb-4">Administración general de parámetros y opciones de operaciones del sistema.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-slate-900 p-4 rounded-lg border border-slate-800">
+                <p class="text-xs font-bold text-white">Estado de la Base de Datos</p>
+                <p class="text-xs text-emerald-400 mt-1">Conectada y activa (SQLite)</p>
+              </div>
+              <div class="bg-slate-900 p-4 rounded-lg border border-slate-800">
+                <p class="text-xs font-bold text-white">Versión del Sistema</p>
+                <p class="text-xs text-slate-400 mt-1">MGSystem Pro v2.0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="seccion-admin-permisos" class="hidden space-y-6">
+          <div class="bg-slate-950 rounded-xl border border-red-900/30 p-5 shadow-lg">
+            <h2 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="shield-check" class="text-red-500 w-4 h-4"></i> Usuarios del Sistema y Permisos
+            </h2>
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-900 text-red-400 uppercase border-b border-red-900/30">
+                <tr>
+                  <th class="p-3">ID</th>
+                  <th class="p-3">Nombre</th>
+                  <th class="p-3">Usuario</th>
+                  <th class="p-3">Rol / Permiso</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-permisos-body" class="divide-y divide-slate-900"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="seccion-informes" class="hidden space-y-6">
+          <div class="bg-slate-950 rounded-xl border border-red-900/30 p-5 shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="bar-chart-3" class="text-red-500 w-4 h-4"></i> Reportes Generales e Informes
+              </h2>
+              <button onclick="alert('Generando archivo de reporte...')" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg shadow">Exportar Informe</button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div class="bg-slate-900 p-4 rounded-lg border border-slate-800">
+                <p class="text-xs text-slate-400">Total Recaudado</p>
+                <p id="inf-total-cobrado" class="text-xl font-bold text-emerald-400 mt-1">Gs. 0</p>
+              </div>
+              <div class="bg-slate-900 p-4 rounded-lg border border-slate-800">
+                <p class="text-xs text-slate-400">Clientes Activos vs Vencidos</p>
+                <p id="inf-clientes-ratio" class="text-xl font-bold text-white mt-1">0 / 0</p>
+              </div>
+              <div class="bg-slate-900 p-4 rounded-lg border border-slate-800">
+                <p class="text-xs text-slate-400">Transacciones Registradas</p>
+                <p id="inf-pagos-total" class="text-xl font-bold text-red-400 mt-1">0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="seccion-ajustes" class="hidden space-y-6">
+          <div class="bg-slate-950 rounded-xl border border-red-900/30 p-5 shadow-lg">
+            <h2 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+              <i data-lucide="settings" class="text-red-500 w-4 h-4"></i> Ajustes Generales
+            </h2>
+            <form id="form-ajustes" class="space-y-4 max-w-lg">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre de la Empresa</label>
+                <input type="text" id="ajuste-empresa" class="w-full p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:border-red-600 outline-none" required>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Moneda del Sistema</label>
+                <input type="text" id="ajuste-moneda" class="w-full p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:border-red-600 outline-none" required>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Días Previos de Aviso de Caducidad</label>
+                <input type="number" id="ajuste-dias" class="w-full p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:border-red-600 outline-none" required>
+              </div>
+              <button type="submit" class="py-2.5 px-6 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg shadow-lg shadow-red-600/30 transition">Guardar Cambios</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let clientesGlobal = [];
+    let chartCarteraInstancia = null;
+    let chartCobrosInstancia = null;
+
+    lucide.createIcons();
+
+    function formatearFecha(fecha) {
+      const año = fecha.getFullYear();
+      const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+      const dia = String(fecha.getDate()).padStart(2, '0');
+      return `${año}-${mes}-${dia}`;
+    }
+
+    function cargarOpcionesCliente() {
+      const selectVencimiento = document.getElementById('cli-vencimiento');
+      const hoy = new Date();
+      const opciones = [30, 60, 90, 180];
+
+      selectVencimiento.innerHTML = opciones.map((dias, indice) => {
+        const fecha = new Date(hoy);
+        fecha.setDate(fecha.getDate() + dias);
+        const valor = formatearFecha(fecha);
+        const texto = fecha.toLocaleDateString('es-PY');
+        return `<option value="${valor}" ${indice === 0 ? 'selected' : ''}>${texto} (${dias} días)</option>`;
+      }).join('');
+    }
+
+    function normalizarMonto(valor) {
+      const digitos = String(valor).replace(/\D/g, '');
+      return digitos ? Number(digitos) : 0;
+    }
+
+    function formatearMonto(valor) {
+      return normalizarMonto(valor).toLocaleString('es-PY');
+    }
+
+    ['pago-monto', 'cli-monto'].forEach(id => {
+      document.getElementById(id).addEventListener('blur', (e) => {
+        if (e.target.value) e.target.value = formatearMonto(e.target.value);
+      });
+    });
+
+    function mostrarFormularioAuth(tipo) {
+      if (tipo === 'registro') {
+        document.getElementById('form-login').classList.add('hidden');
+        document.getElementById('form-registro').classList.remove('hidden');
+        document.getElementById('auth-subtitulo').innerText = 'Crea una nueva cuenta de usuario';
+      } else {
+        document.getElementById('form-registro').classList.add('hidden');
+        document.getElementById('form-login').classList.remove('hidden');
+        document.getElementById('auth-subtitulo').innerText = 'Ingresa tus credenciales para acceder';
+      }
+    }
+
+    // Login seguro
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const usuario = document.getElementById('login-user').value;
+      const password = document.getElementById('login-pass').value;
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuario, password })
+        });
+
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          alert('El servidor no respondió correctamente. Reinicia el servidor con npm start.');
+          return;
+        }
+
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem('usuarioMG', JSON.stringify(data));
+          iniciarApp(data);
+        } else {
+          alert(data.error || 'Usuario o contraseña incorrectos');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error de conexión con el servidor');
+      }
+    });
+
+    // Registro seguro
+    document.getElementById('form-registro').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById('reg-nombre').value;
+      const usuario = document.getElementById('reg-user').value;
+      const password = document.getElementById('reg-pass').value;
+      const rol = document.getElementById('reg-rol').value;
+
+      try {
+        const res = await fetch('/api/registro-usuario', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, usuario, password, rol })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          alert('Usuario creado correctamente. Ya puedes iniciar sesión.');
+          document.getElementById('form-registro').reset();
+          mostrarFormularioAuth('login');
+        } else {
+          alert(data.error || 'Error al registrar usuario');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error de conexión');
+      }
+    });
+
+    function cerrarSesion() {
+      localStorage.removeItem('usuarioMG');
+      document.getElementById('vista-app').classList.add('hidden');
+      document.getElementById('vista-auth').classList.remove('hidden');
+      document.getElementById('form-login').reset();
+    }
+
+    function aplicarPermisosPorRol(rol) {
+      const menuAdmin = document.getElementById('menu-administrativo-wrapper');
+      const btnAjustes = document.getElementById('btn-ajustes');
+
+      if (rol !== 'Administrador') {
+        if (menuAdmin) menuAdmin.classList.add('hidden');
+        if (btnAjustes) btnAjustes.classList.add('hidden');
+      } else {
+        if (menuAdmin) menuAdmin.classList.remove('hidden');
+        if (btnAjustes) btnAjustes.classList.remove('hidden');
+      }
+    }
+
+    function iniciarApp(usuario) {
+      document.getElementById('vista-auth').classList.add('hidden');
+      document.getElementById('vista-app').classList.remove('hidden');
+      document.getElementById('user-name').innerText = `${usuario.nombre} (${usuario.rol || 'Operador'})`;
+      document.getElementById('user-avatar').innerText = usuario.nombre.charAt(0).toUpperCase();
+      
+      aplicarPermisosPorRol(usuario.rol);
+      cargarOpcionesCliente();
+      navegar('dashboard');
+      setTimeout(cargarGraficos, 100);
+    }
+
+    function toggleSubmenu(id) {
+      const elem = document.getElementById(id);
+      if (elem) elem.classList.toggle('hidden');
+    }
+
+    function navegar(seccion) {
+      const secciones = ['dashboard', 'clientes', 'morosos', 'pagos', 'admin-config', 'admin-permisos', 'informes', 'ajustes'];
+      secciones.forEach(s => {
+        const el = document.getElementById(`seccion-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+
+      const seccionDestino = document.getElementById(`seccion-${seccion}`);
+      if (seccionDestino) seccionDestino.classList.remove('hidden');
+
+      if (seccion === 'dashboard') cargarDashboard();
+      if (seccion === 'clientes') cargarClientes();
+      if (seccion === 'morosos') cargarMorosos();
+      if (seccion === 'pagos') cargarHistorialPagos();
+      if (seccion === 'admin-permisos') cargarPermisos();
+      if (seccion === 'informes') cargarInformes();
+      if (seccion === 'ajustes') cargarAjustes();
+    }
+
+    async function cargarDashboard() {
+      const res = await fetch('/api/dashboard');
+      const data = await res.json();
+
+      document.getElementById('metric-clientes').innerText = data.totalClientes.toLocaleString();
+      document.getElementById('metric-facturacion').innerText = `Gs. ${data.facturacion.toLocaleString()}`;
+      document.getElementById('metric-vencidos').innerText = data.vencidos;
+
+      const selectPago = document.getElementById('select-pago-cliente');
+      selectPago.innerHTML = '<option value="">Seleccione cliente...</option>';
+
+      if (data.clientes) {
+        data.clientes.forEach(c => {
+          selectPago.innerHTML += `<option value="${c.id}">${c.nombre} (${c.servicio})</option>`;
+        });
+      }
+    }
+
+    async function cargarClientes() {
+      const res = await fetch('/api/clientes');
+      clientesGlobal = await res.json();
+      renderizarTablaClientes(clientesGlobal);
+    }
+
+    function renderizarTablaClientes(lista) {
+      const tbody = document.getElementById('tabla-clientes-body');
+      tbody.innerHTML = '';
+      lista.forEach(c => {
+        tbody.innerHTML += `
+          <tr>
+            <td class="p-3 font-mono text-slate-500">#${c.id}</td>
+            <td class="p-3 font-semibold text-white">${c.nombre}</td>
+            <td class="p-3 text-slate-400">${c.servicio}</td>
+            <td class="p-3 font-semibold text-red-400">Gs. ${Number(c.monto).toLocaleString()}</td>
+            <td class="p-3 font-mono text-slate-300">${c.vencimiento}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function filtrarClientes() {
+      const texto = document.getElementById('buscar-cliente').value.toLowerCase();
+      const filtrados = clientesGlobal.filter(c => 
+        c.nombre.toLowerCase().includes(texto) || 
+        c.servicio.toLowerCase().includes(texto)
+      );
+      renderizarTablaClientes(filtrados);
+    }
+
+    async function cargarMorosos() {
+      const res = await fetch('/api/clientes');
+      const clientes = await res.json();
+      const tbody = document.getElementById('tabla-morosos-body');
+      tbody.innerHTML = '';
+      
+      const hoy = new Date();
+      clientes.forEach(c => {
+        const fechaVenc = new Date(c.vencimiento);
+        const esVencido = fechaVenc < hoy;
+        
+        tbody.innerHTML += `
+          <tr>
+            <td class="p-3 font-semibold text-white">${c.nombre}</td>
+            <td class="p-3 text-slate-400">${c.servicio}</td>
+            <td class="p-3 font-semibold text-red-400">Gs. ${Number(c.monto).toLocaleString()}</td>
+            <td class="p-3 font-mono ${esVencido ? 'text-red-500 font-bold' : 'text-slate-400'}">${c.vencimiento}</td>
+            <td class="p-3">
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold ${esVencido ? 'bg-red-950 text-red-400 border border-red-800' : 'bg-slate-800 text-emerald-400'}">
+                ${esVencido ? 'VENCIDO' : 'AL DÍA'}
+              </span>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function cargarHistorialPagos() {
+      const res = await fetch('/api/pagos');
+      const pagos = await res.json();
+      const tbody = document.getElementById('tabla-pagos-body');
+      tbody.innerHTML = '';
+      pagos.forEach(p => {
+        tbody.innerHTML += `
+          <tr>
+            <td class="p-3 font-mono text-slate-500">#PAG-${p.id}</td>
+            <td class="p-3 font-semibold text-white">${p.nombre}</td>
+            <td class="p-3 font-bold text-red-400">Gs. ${Number(p.monto).toLocaleString()}</td>
+            <td class="p-3"><span class="px-2 py-1 bg-slate-900 border border-slate-800 rounded text-xs text-slate-300">${p.metodo}</span></td>
+            <td class="p-3 text-slate-400 font-mono text-xs">${new Date(p.fecha).toLocaleString()}</td>
+          </tr>
+        `;
+      });
+    }
+
+    async function cargarPermisos() {
+      const res = await fetch('/api/usuarios');
+      const usuarios = await res.json();
+      const tbody = document.getElementById('tabla-permisos-body');
+      tbody.innerHTML = '';
+      usuarios.forEach(u => {
+        tbody.innerHTML += `
+          <tr>
+            <td class="p-3 font-mono text-slate-500">#USR-${u.id}</td>
+            <td class="p-3 font-semibold text-white">${u.nombre}</td>
+            <td class="p-3 font-mono text-slate-400">${u.usuario}</td>
+            <td class="p-3"><span class="px-2 py-1 bg-red-950 text-red-400 border border-red-800 rounded text-xs font-bold">${u.rol}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    async function cargarInformes() {
+      const res = await fetch('/api/informes');
+      const data = await res.json();
+      document.getElementById('inf-total-cobrado').innerText = `Gs. ${data.totalCobrado.toLocaleString()}`;
+      document.getElementById('inf-clientes-ratio').innerText = `${data.activos} / ${data.vencidos}`;
+      document.getElementById('inf-pagos-total').innerText = data.pagosCount;
+    }
+
+    async function cargarAjustes() {
+      const res = await fetch('/api/ajustes');
+      const data = await res.json();
+      document.getElementById('ajuste-empresa').value = data.empresa || '';
+      document.getElementById('ajuste-moneda').value = data.moneda || '';
+      document.getElementById('ajuste-dias').value = data.dias_aviso || 5;
+    }
+
+    document.getElementById('form-ajustes').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const empresa = document.getElementById('ajuste-empresa').value;
+      const moneda = document.getElementById('ajuste-moneda').value;
+      const dias_aviso = document.getElementById('ajuste-dias').value;
+
+      const res = await fetch('/api/ajustes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ empresa, moneda, dias_aviso })
+      });
+
+      if (res.ok) {
+        alert('Ajustes guardados con éxito');
+      }
+    });
+
+    document.getElementById('form-pago-rapido').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const cliente_id = document.getElementById('select-pago-cliente').value;
+      const monto = normalizarMonto(document.getElementById('pago-monto').value);
+      const metodo = document.getElementById('pago-metodo').value;
+
+      const res = await fetch('/api/pagos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cliente_id, monto, metodo })
+      });
+
+      if (res.ok) {
+        alert('Pago registrado con éxito.');
+        document.getElementById('form-pago-rapido').reset();
+        cargarDashboard();
+      }
+    });
+
+    document.getElementById('form-nuevo-cliente').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById('cli-nombre').value;
+      const servicio = document.getElementById('cli-servicio').value;
+      const monto = normalizarMonto(document.getElementById('cli-monto').value);
+      const vencimiento = document.getElementById('cli-vencimiento').value;
+
+      const res = await fetch('/api/clientes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, servicio, monto, vencimiento })
+      });
+
+      if (res.ok) {
+        alert('Cliente registrado con éxito.');
+        document.getElementById('form-nuevo-cliente').reset();
+        cargarClientes();
+      }
+    });
+
+    function cargarGraficos() {
+      if (chartCarteraInstancia) chartCarteraInstancia.destroy();
+      if (chartCobrosInstancia) chartCobrosInstancia.destroy();
+
+      new Chart(document.getElementById('miniDoughnut'), {
+        type: 'doughnut',
+        data: { datasets: [{ data: [100], backgroundColor: ['#dc2626'], borderWidth: 0 }] },
+        options: { cutout: '80%', plugins: { tooltip: { enabled: false } } }
+      });
+
+      chartCarteraInstancia = new Chart(document.getElementById('chartCartera'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Seguro Auto', 'Vida', 'Hogar', 'Otros'],
+          datasets: [{ data: [45, 30, 15, 10], backgroundColor: ['#dc2626', '#ef4444', '#f87171', '#475569'], borderWidth: 2, borderColor: '#020617' }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } } }
+      });
+
+      chartCobrosInstancia = new Chart(document.getElementById('chartCobros'), {
+        type: 'bar',
+        data: {
+          labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+          datasets: [
+            { label: 'Pagados', data: [45, 52, 48, 54, 60, 68], backgroundColor: '#dc2626' },
+            { label: 'Vencidos', data: [10, 8, 12, 6, 4, 5], backgroundColor: '#ef4444' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } },
+          plugins: { legend: { labels: { color: '#94a3b8' } } }
+        }
+      });
+    }
+
+    window.onload = () => {
+      localStorage.clear(); // Limpiamos la sesión al recargar la página para asegurar inicio limpio
+    };
+  </script>
+</body>
+</html>

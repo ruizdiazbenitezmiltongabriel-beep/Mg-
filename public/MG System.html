@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">Ñ
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MG Reparaciones · Demo del sistema</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&display=swap">
+<style>
+/* Colores y estilos base de la identidad visual de la demo. */
+:root{--bg:#f3f5f8;--card:#fff;--tx:#182331;--mut:#778393;--bd:#e3e8ee;--ac:#e65f3f;--acf:#fff;--sb:#172431;--sbt:#b9c5cf;--green:#23836d;color-scheme:light;box-sizing:border-box}
+*{box-sizing:border-box}
+html{scroll-padding-top:20px}
+/* La imagen adjunta cubre el fondo; la capa oscura mantiene el contenido legible. */
+body{margin:0;background-color:#111923;background-image:linear-gradient(rgba(11,18,26,.68),rgba(11,18,26,.68)),url('/mg-background.jpg');background-position:center,center 45%;background-size:cover,cover;background-attachment:fixed,fixed;background-repeat:no-repeat,no-repeat;color:var(--tx);font:14px/1.55 Onest,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+/* Navegación lateral y marca del taller. */
+nav{background:var(--sb);color:var(--sbt);padding:25px 17px 18px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.logo{display:flex;align-items:center;gap:11px;color:#fff;padding:0 8px 28px;font-weight:700;font-size:16px;letter-spacing:-.3px}
+.logo-mark{height:39px;width:39px;display:grid;place-items:center;border-radius:12px;background:var(--ac);color:white;font-size:14px;font-weight:800;letter-spacing:-1px;box-shadow:0 6px 16px #e65f3f40}
+.logo small{display:block;font-weight:400;font-size:11px;color:#91a0ac;letter-spacing:.2px;margin-top:1px}
+.nav-label{padding:0 11px 9px;color:#72808c;text-transform:uppercase;font-weight:700;font-size:10px;letter-spacing:1.25px}
+nav button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;color:inherit;padding:11px 12px;margin:2px 0;border-radius:9px;cursor:pointer;font-size:13px;transition:background .18s,color .18s}
+nav button:hover{background:rgba(255,255,255,.07);color:#fff}
+nav button.on{background:#ffffff12;color:#fff;font-weight:600;box-shadow:inset 3px 0 var(--ac)}
+.nav-icon{width:20px;text-align:center;color:#92a2ae;font-size:15px}
+nav button.on .nav-icon{color:#ff997f}
+.nav-foot{margin-top:auto;padding:13px 10px 4px;border-top:1px solid #ffffff15;color:#82919d;font-size:11px}
+.nav-foot strong{display:block;color:#dce4e9;font-size:12px;font-weight:600;margin-bottom:3px}
+nav button:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,.chips button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+main{padding:0 42px 48px;max-width:1600px;width:100%;margin:0 auto}
+/* Cabecera, aviso de demostración y títulos de cada sección. */
+.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff2b;margin-bottom:28px}
+.crumb{color:#d6e0e7;font-size:12px}.crumb strong{color:#fff;font-weight:600}
+.demo{display:flex;align-items:center;gap:13px;background:#fff8f4;border:1px solid #f5d8ce;border-radius:12px;padding:12px 16px;color:#815344;margin-bottom:26px;font-size:12px}
+.demo-mark{display:grid;place-items:center;flex:none;width:31px;height:31px;border-radius:9px;background:#fbe5de;color:var(--ac);font-weight:800;font-size:15px}
+.demo strong{display:block;color:#603d33;font-size:13px;margin-bottom:1px}
+.demo-copy{margin-left:auto;white-space:nowrap;color:#9a6655;font-size:11px;font-weight:600}
+h1{font-size:27px;line-height:1.2;letter-spacing:-.8px;margin:0 0 7px;color:#fff}.sub{color:#d0dbe2;margin:0 0 23px;font-size:13px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:23px}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:1.15px;font-weight:700;color:#ffad95;margin:0 0 8px}
+/* Indicadores resumidos del estado del taller. */
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:30px}
+.stat{position:relative;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:17px 18px;min-height:112px;box-shadow:0 3px 12px #18233106}
+.stat:before{content:"";position:absolute;left:0;top:19px;bottom:19px;width:3px;background:var(--stat,var(--ac));border-radius:0 4px 4px 0}
+.stat b{display:block;font-size:25px;line-height:1.2;letter-spacing:-.6px;margin:9px 0 3px}.stat span{color:var(--mut);font-size:11px}
+.stat .stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.75px;color:#8a95a1}
+.btn{background:var(--ac);color:var(--acf);border:0;border-radius:8px;padding:10px 15px;cursor:pointer;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 10px #e65f3f25;transition:transform .15s,background .15s}
+.btn:hover{background:#cf4e32;transform:translateY(-1px)}
+.btn.s{background:#fff;color:var(--tx);border:1px solid var(--bd);box-shadow:none;padding:7px 10px;font-size:12px;font-weight:500}
+.btn.share{background:#fff;color:#314252;border:1px solid var(--bd);box-shadow:none;padding:8px 12px;font-size:12px}
+.btn.share:hover,.btn.s:hover{background:#f8fafb;transform:none}
+.section-title{font-size:16px;letter-spacing:-.2px;margin:0 0 13px;color:#fff}
+/* Filtros, tarjetas de reparación y etiquetas de estado. */
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 16px}
+.chips button{border:1px solid var(--bd);background:#fff;color:#697686;border-radius:99px;padding:6px 13px;cursor:pointer;font-size:12px}
+.chips button.on{background:var(--sb);color:white;border-color:var(--sb)}
+.ticket{display:grid;grid-template-columns:82px minmax(0,1fr);background:var(--card);border:1px solid var(--bd);border-radius:12px;margin-bottom:11px;overflow:hidden;box-shadow:0 3px 12px #18233105;transition:border-color .18s,transform .18s}
+.ticket:hover{border-color:#ccd5dd;transform:translateY(-1px)}
+.stub{border-right:1px solid var(--bd);background:#f8f9fb;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:#86919c;text-transform:uppercase;letter-spacing:.6px}
+.stub b{font-size:19px;color:var(--tx);letter-spacing:-.4px}
+.tb{padding:14px 17px;display:grid;gap:8px}
+.row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.ticket .row:first-child b{font-size:14px}
+.b{padding:3px 10px;border-radius:99px;font-size:10px;font-weight:600;background:rgba(var(--c),.1);color:rgb(var(--c));border:1px solid rgba(var(--c),.18)}
+.mut{color:var(--mut);font-size:11px}
+/* Tablas de clientes e inventario, y gráficos de reportes. */
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+th,td{text-align:left;padding:12px 15px;border-bottom:1px solid var(--bd);font-size:12px}
+th{background:#f8f9fb;color:#82909d;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.65px}
+tbody tr:last-child td{border-bottom:0}
+.wrap{overflow-x:auto;border-radius:12px;box-shadow:0 3px 12px #18233105}
+.bar{display:grid;grid-template-columns:76px minmax(80px,1fr) 116px;gap:12px;align-items:center;margin:12px 0;font-size:12px}
+.bar i{display:block;height:9px;border-radius:99px;background:linear-gradient(90deg,#e65f3f,#f2a17e)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:15px;box-shadow:0 3px 12px #18233105}
+.card h2{font-size:14px;letter-spacing:-.2px;margin:0 0 14px}
+.low{color:#c65335;font-weight:700;font-size:11px}
+.empty{padding:24px;border:1px dashed var(--bd);border-radius:12px;color:var(--mut);text-align:center;background:#fff}
+/* Notificación flotante y formulario emergente. */
+#toast{position:fixed;right:22px;bottom:22px;z-index:30;background:#172431;color:white;padding:12px 16px;border-radius:10px;box-shadow:0 12px 30px #17243130;font-size:13px;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none}
+#toast.on{opacity:1;transform:translateY(0)}
+#mo{position:fixed;inset:0;background:rgba(16,27,38,.48);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+#mo.on{display:flex}
+.modal{background:var(--card);border:1px solid var(--bd);border-radius:15px;padding:23px;width:100%;max-width:440px;display:grid;gap:11px;box-shadow:0 20px 60px #101b2633}
+.modal h2{font-size:19px;letter-spacing:-.4px}
+.modal label{display:grid;gap:4px;font-size:11px;font-weight:600;color:#687584}
+.modal input,.modal select,.tb select{background:#fff;border:1px solid var(--bd);border-radius:8px;padding:9px 10px;font-size:12px}
+.err{color:#c2410c;font-size:12px;min-height:18px}
+/* Ajustes para tablet y móvil; el menú pasa a la parte inferior en pantallas pequeñas. */
+@media(max-width:1050px){main{padding-left:26px;padding-right:26px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){
+.app{display:block}
+nav{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;display:flex;flex-direction:row;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:10;justify-content:space-around;border-top:1px solid #ffffff16}
+.logo,.nav-label,.nav-foot{display:none}
+nav button{display:flex;flex-direction:column;justify-content:center;gap:2px;width:auto;flex:1;text-align:center;padding:7px 2px;margin:0;font-size:10px}
+nav button.on{box-shadow:inset 0 -2px var(--ac)}
+.nav-icon{font-size:15px}
+main{padding:0 16px 94px}
+.topbar{height:61px;margin-bottom:20px}
+.demo{align-items:flex-start;padding:11px;margin-bottom:21px}
+.demo-copy{display:none}
+h1{font-size:23px}
+.grid{gap:9px;margin-bottom:25px}
+.stat{padding:13px 13px;min-height:100px}
+.stat b{font-size:21px}
+.ticket{grid-template-columns:58px minmax(0,1fr)}
+.tb{padding:12px}
+.bar{grid-template-columns:48px minmax(55px,1fr) 84px;gap:7px;font-size:10px}
+}
+@media(max-width:380px){.grid{grid-template-columns:1fr 1fr}.btn.share{padding:7px 9px}}
+</style>
+</head>
+<body>
+<!-- Estructura principal: navegación lateral y área donde se dibuja cada pantalla. -->
+<div class="app">
+<nav aria-label="Menú principal"></nav>
+<main id="m"></main>
+</div>
+<!-- Ventana modal reutilizable para registrar una orden de reparación. -->
+<div id="mo" role="dialog" aria-modal="true"><div class="modal" id="mb"></div></div>
+<!-- Aviso temporal usado al copiar o compartir el enlace de la demo. -->
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+// Datos de ejemplo usados para que la demo se pueda explorar sin conectarse a la base real.
+var TODAY='2026-10-26';
+var EST=['Recibido','En reparación','Listo','Entregado'];
+var COL=['36,87,245','217,119,6','22,163,74','100,116,139'];
+var MENU=[['inicio','Inicio'],['ordenes','Órdenes'],['clientes','Clientes'],['repuestos','Repuestos'],['reportes','Reportes']];
+var cli=[{id:1,n:'Carlos Benítez',t:'0981 123 456'},{id:2,n:'Lucía Gómez',t:'0982 234 567'},{id:3,n:'Marcos Villalba',t:'0983 345 678'},{id:4,n:'Ana Duarte',t:'0984 456 789'},{id:5,n:'Rubén Cáceres',t:'0985 567 890'}];
+// Órdenes ficticias con cliente, equipo, presupuesto, estado y fechas de ejemplo.
+var ord=[
+{id:109,c:4,eq:'Realme C25',t:'Software',f:'Desbloqueo de cuenta',p:80000,e:3,d:'2026-10-02',g:'2026-10-02'},
+{id:108,c:3,eq:'Samsung J7',t:'Pantalla',f:'Cambio de pantalla',p:200000,e:3,d:'2026-10-03',g:'2026-10-05'},
+{id:107,c:2,eq:'Redmi 9A',t:'Batería',f:'Cambio de batería',p:110000,e:3,d:'2026-10-05',g:'2026-10-06'},
+{id:105,c:5,eq:'Samsung A12',t:'Otro',f:'Puerto de carga flojo',p:120000,e:3,d:'2026-10-12',g:'2026-10-14'},
+{id:104,c:4,eq:'Motorola G22',t:'Pantalla',f:'Pantalla sin táctil',p:220000,e:3,d:'2026-10-20',g:'2026-10-22'},
+{id:106,c:1,eq:'Tablet Lenovo',t:'Software',f:'Actualización y limpieza',p:70000,e:2,d:'2026-10-25',g:null},
+{id:102,c:2,eq:'iPhone 11',t:'Batería',f:'La batería se descarga rápido',p:180000,e:1,d:'2026-10-23',g:null},
+{id:101,c:1,eq:'Samsung A32',t:'Pantalla',f:'Pantalla rota',p:250000,e:1,d:'2026-10-24',g:null},
+{id:103,c:3,eq:'Xiaomi Redmi Note 10',t:'Software',f:'No enciende, se queda en el logo',p:90000,e:0,d:'2026-10-26',g:null}];
+// Inventario ilustrativo; el nivel mínimo permite destacar lo que habría que reponer.
+var prt=[{n:'Pantalla Samsung A32',s:2,m:2,c:110000},{n:'Batería iPhone 11',s:1,m:2,c:85000},{n:'Batería Redmi 9A',s:4,m:2,c:40000},{n:'Módulo de carga Samsung A12',s:3,m:2,c:25000},{n:'Vidrio templado universal',s:25,m:10,c:3000},{n:'Cargador 20 W',s:2,m:5,c:45000}];
+// Estado de navegación y filtro seleccionado en la vista de órdenes.
+var view='inicio',filt=-1;
+// Atajo para buscar un elemento del documento por selector CSS.
+function $(s){return document.querySelector(s)}
+// Escapa caracteres especiales antes de insertar texto de ejemplo en HTML.
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+// Formatea importes con la convención numérica de Paraguay.
+function gs(n){return n.toLocaleString('es-PY')+' Gs.'}
+// Convierte una fecha ISO a formato día/mes/año.
+function fd(s){var a=s.split('-');return a[2]+'/'+a[1]+'/'+a[0]}
+// Busca un cliente de ejemplo usando su identificador.
+function cn(id){return cli.filter(function(c){return c.id==id})[0]}
+// Genera la etiqueta visual del estado de una orden.
+function bad(e){return '<span class="b" style="--c:'+COL[e]+'">'+EST[e]+'</span>'}
+// Calcula si la garantía de una orden entregada sigue vigente.
+function garantia(o){if(o.e!=3)return '';var d=new Date(o.g+'T12:00:00');d.setDate(d.getDate()+30);var ok=d>=new Date(TODAY+'T00:00:00');return '<span class="mut">Garantía '+(ok?'vigente hasta ':'vencida el ')+d.toLocaleDateString('es-PY')+'</span>'}
+// Construye un enlace de WhatsApp con un mensaje preparado para esa orden.
+function wa(o){var c=cn(o.c),tel='595'+c.t.replace(/\D/g,'').replace(/^0/,'');var msg='Hola '+c.n.split(' ')[0]+', te escribo de MG Reparaciones. Tu '+o.eq+' (orden #'+o.id+') está: '+EST[o.e].toLowerCase()+'.'+(o.e==2?' Ya podés retirarlo. Total: '+gs(o.p)+'.':'');return 'https://wa.me/'+tel+'?text='+encodeURIComponent(msg)}
+// Dibuja el menú y resalta la sección activa.
+function drawNav(){$('nav').innerHTML='<div class="logo"><span class="logo-mark">MG</span><span>MG Reparaciones<small>Taller · Santa Elena</small></span></div><div class="nav-label">Espacio de trabajo</div>'+MENU.map(function(m,i){return '<button class="'+(m[0]==view?'on':'')+'" onclick="go(\''+m[0]+'\')"><span class="nav-icon" aria-hidden="true">'+['⌂','◷','◎','▦','↗'][i]+'</span>'+m[1]+'</button>'}).join('')+'<div class="nav-foot"><strong>Modo demostración</strong>Datos de ejemplo · no se guardan</div>'}
+// Cambia de sección, vuelve a dibujar la pantalla y desplaza al inicio.
+function go(v){view=v;draw();window.scrollTo(0,0)}
+// Presenta una tarjeta con los datos y acciones disponibles para una orden.
+function ticket(o){var c=cn(o.c);return '<div class="ticket"><div class="stub">Orden<b>#'+o.id+'</b></div><div class="tb"><div class="row"><b>'+esc(o.eq)+'</b>'+bad(o.e)+'</div><div>'+esc(o.f)+' <span class="mut">· '+esc(c.n)+'</span></div><div class="row"><span class="mut">Ingreso '+fd(o.d)+' · '+gs(o.p)+'</span>'+garantia(o)+'</div><div class="row"><select aria-label="Cambiar estado" onchange="setE('+o.id+',this.value)">'+EST.map(function(s,i){return '<option value="'+i+'"'+(i==o.e?' selected':'')+'>'+s+'</option>'}).join('')+'</select><a class="btn s" target="_blank" rel="noopener" href="'+wa(o)+'">Avisar por WhatsApp</a></div></div></div>'}
+// Suma el valor de las órdenes entregadas durante el mes de la demo.
+function ingresosMes(){return ord.filter(function(o){return o.e==3&&o.g&&o.g.slice(0,7)=='2026-10'}).reduce(function(a,o){return a+o.p},0)}
+// Dibuja la pantalla activa con sus métricas, tablas, órdenes o reportes.
+function draw(){drawNav();var h='';
+if(view=='inicio'){
+var en=ord.filter(function(o){return o.e<3}).length,li=ord.filter(function(o){return o.e==2}).length,bj=prt.filter(function(p){return p.s<=p.m}).length;
+h='<div class="top"><div><p class="eyebrow">Lunes · '+fd(TODAY)+'</p><h1>El taller, en orden.</h1><p class="sub">Todo lo que está pasando en MG Reparaciones, de un vistazo.</p></div><button class="btn" onclick="nueva()">＋ Nueva orden</button></div><div class="grid"><div class="stat" style="--stat:#e65f3f"><span class="stat-label">En proceso</span><b>'+en+'</b><span>Equipos dentro del taller</span></div><div class="stat" style="--stat:#23836d"><span class="stat-label">Para entregar</span><b>'+li+'</b><span>Listos para retirar</span></div><div class="stat" style="--stat:#6979a8"><span class="stat-label">Ingresos · octubre</span><b>'+gs(ingresosMes())+'</b><span>Reparaciones entregadas</span></div><div class="stat" style="--stat:#d39435"><span class="stat-label">Stock a revisar</span><b>'+bj+'</b><span>Repuestos en nivel mínimo</span></div></div><h2 class="section-title">Seguimiento de hoy</h2>'+ord.filter(function(o){return o.e<3}).map(ticket).join('')}
+if(view=='ordenes'){
+var l=ord.filter(function(o){return filt<0||o.e==filt}).sort(function(a,b){return b.id-a.id});
+h='<div class="top"><div><p class="eyebrow">Operación</p><h1>Órdenes de reparación</h1><p class="sub">Seguí cada equipo desde que ingresa hasta que vuelve a casa.</p></div><button class="btn" onclick="nueva()">＋ Nueva orden</button></div><div class="chips">'+[['Todas',-1]].concat(EST.map(function(s,i){return[s,i]})).map(function(x){return '<button class="'+(filt==x[1]?'on':'')+'" onclick="filt='+x[1]+';draw()">'+x[0]+'</button>'}).join('')+'</div>'+(l.map(ticket).join('')||'<p class="empty">No hay órdenes en este estado.</p>')}
+if(view=='clientes'){
+h='<p class="eyebrow">Relaciones</p><h1>Personas que vuelven</h1><p class="sub">Un historial claro para atender mejor en cada visita.</p><div class="wrap"><table><thead><tr><th>Nombre</th><th>Teléfono</th><th>Reparaciones</th><th>Total invertido</th></tr></thead><tbody>'+cli.map(function(c){var m=ord.filter(function(o){return o.c==c.id});return '<tr><td><strong>'+esc(c.n)+'</strong></td><td>'+esc(c.t)+'</td><td>'+m.length+'</td><td>'+gs(m.reduce(function(a,o){return a+o.p},0))+'</td></tr>'}).join('')+'</tbody></table></div>'}
+if(view=='repuestos'){
+h='<p class="eyebrow">Inventario</p><h1>Repuestos del taller</h1><p class="sub">Anticipate a lo que falta antes de que frene una reparación.</p><div class="wrap"><table><thead><tr><th>Producto</th><th>Stock</th><th>Mínimo</th><th>Costo unitario</th><th>Estado</th></tr></thead><tbody>'+prt.map(function(p,i){return '<tr><td><strong>'+esc(p.n)+'</strong></td><td>'+p.s+'</td><td>'+p.m+'</td><td>'+gs(p.c)+'</td><td>'+(p.s<=p.m?'<span class="low">Reponer</span>':'En stock')+'</td></tr>'}).join('')+'</tbody></table></div>'}
+if(view=='reportes'){
+var mes=[['Jul',1100000],['Ago',1400000],['Sep',1600000],['Oct',ingresosMes()]],mx=1600000,tp={};
+ord.forEach(function(o){tp[o.t]=(tp[o.t]||0)+1});
+h='<p class="eyebrow">Pulso del negocio</p><h1>Números que cuentan</h1><p class="sub">Ingresos y reparaciones frecuentes del taller.</p><div class="card"><h2>Ingresos por mes</h2>'+mes.map(function(m){return '<div class="bar"><span>'+m[0]+'</span><span><i style="width:'+Math.max(2,m[1]/mx*100)+'%"></i></span><span>'+gs(m[1])+'</span></div>'}).join('')+'<p class="mut">Octubre está en curso.</p></div><div class="card"><h2>Lo que más llega al taller</h2>'+Object.keys(tp).sort(function(a,b){return tp[b]-tp[a]}).map(function(k){return '<div class="bar"><span>'+k+'</span><span><i style="width:'+tp[k]/ord.length*100+'%"></i></span><span>'+tp[k]+' equipos</span></div>'}).join('')+'</div>'}
+$('#m').innerHTML='<header class="topbar"><span class="crumb">MG Reparaciones&nbsp; / &nbsp;<strong>Demo interactiva</strong></span><button class="btn share" onclick="shareDemo()">↗ Compartir demo</button></header><div class="demo"><span class="demo-mark">i</span><div><strong>Estás explorando una demo interactiva</strong>Probá crear órdenes, mover estados y revisar el inventario. Los datos son de ejemplo.</div><span class="demo-copy">Los cambios se reinician al recargar</span></div>'+h}
+// Comparte la demo con el menú del dispositivo o copia su URL al portapapeles.
+async function shareDemo(){var url=window.location.origin+'/demo';try{if(navigator.share){await navigator.share({title:'MG Reparaciones · Demo',text:'Mirá cómo organizamos el trabajo del taller.',url:url});return}await navigator.clipboard.writeText(url);toast('Enlace de demo copiado.')}catch(err){if(err&&err.name==='AbortError')return;toast('No se pudo compartir automáticamente. Copiá este enlace: '+url)}}
+// Muestra un mensaje breve y lo oculta automáticamente después de unos segundos.
+function toast(text){var el=$('#toast');el.textContent=text;el.classList.add('on');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(function(){el.classList.remove('on')},3800)}
+// Actualiza el estado de una orden y asigna la fecha de entrega cuando corresponde.
+function setE(id,v){var o=ord.filter(function(x){return x.id==id})[0];o.e=+v;o.g=o.e==3?TODAY:null;draw()}
+// Abre el formulario modal para ingresar una nueva reparación.
+function nueva(){$('#mb').innerHTML='<h2 style="margin:0">Nueva orden</h2><label>Cliente<input id="fc" list="dl" placeholder="Nombre del cliente"><datalist id="dl">'+cli.map(function(c){return '<option value="'+esc(c.n)+'">'}).join('')+'</datalist></label><label>Teléfono<input id="ft" inputmode="tel" placeholder="0981 000 000"></label><label>Equipo<input id="fe" placeholder="Marca y modelo"></label><label>Tipo<select id="ftp"><option>Pantalla</option><option>Batería</option><option>Software</option><option>Otro</option></select></label><label>Falla<input id="ff" placeholder="¿Qué le pasa?"></label><label>Presupuesto (Gs.)<input id="fp" inputmode="numeric" placeholder="150000"></label><div class="err" id="er"></div><div class="row"><button class="btn s" onclick="cerrar()">Cancelar</button><button class="btn" onclick="guardar()">Guardar orden</button></div>';$('#mo').classList.add('on');$('#fc').focus()}
+// Cierra el formulario modal.
+function cerrar(){$('#mo').classList.remove('on')}
+// Valida el formulario, registra cliente/orden en los datos de demo y muestra la lista.
+function guardar(){var n=$('#fc').value.trim(),t=$('#ft').value.trim(),e=$('#fe').value.trim(),f=$('#ff').value.trim(),p=parseInt($('#fp').value.replace(/\D/g,''),10);
+if(!n||!e||!f){$('#er').textContent='Completá cliente, equipo y falla para guardar.';return}
+if(!p||p<=0){$('#er').textContent='Ingresá el presupuesto con números, por ejemplo 150000.';return}
+var c=cli.filter(function(x){return x.n.toLowerCase()==n.toLowerCase()})[0];
+if(!c){if(!/^[0-9 +]{7,}$/.test(t)){$('#er').textContent='Cliente nuevo: ingresá un teléfono válido.';return}c={id:cli.length+1,n:n,t:t};cli.push(c)}
+ord.push({id:Math.max.apply(null,ord.map(function(o){return o.id}))+1,c:c.id,eq:e,t:$('#ftp').value,f:f,p:p,e:0,d:TODAY,g:null});cerrar();view='ordenes';filt=-1;draw()}
+// Cierra el modal al hacer clic en el fondo, fuera del formulario.
+$('#mo').addEventListener('click',function(ev){if(ev.target.id=='mo')cerrar()});
+// Permite cerrar el modal con Escape.
+document.addEventListener('keydown',function(ev){if(ev.key=='Escape')cerrar()});
+// Renderiza la pantalla inicial al abrir la demo.
+draw();
+</script>
+</body>
+</html>
